@@ -1,51 +1,34 @@
-const express = require("express");
-var cors = require("cors");
-const app = express();
-const port = 3000;
 
-// cors
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require('cors');
+const app = express();
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+let todos = [];
 
-// array of object
-const arr = [];
-
-// get
-app.get("/api/contacts/Users", (req, res) => {
-  res.send(arr);
+app.get("/todos", (req, res) => {
+  res.json(todos);
 });
 
-// post
-app.post("/api/contacts/Users", (req, res) => {
-  const { title } = req.body;
-  arr.push({
-    title: title,
-    id: Date.now(),
-  });
+app.post("/todos", (req, res) => {
+  const { text } = req.body;
+  const newTodo = {
+    id: todos.length + 1,
+    text,
+  };
+  todos.push(newTodo);
+  res.status(201).json(newTodo);
 });
 
-// delete
-app.delete("/api/contacts/Users/:id", (req, res) => {
+app.delete("/todos/:id", (req, res) => {
   const { id } = req.params;
-  const index = arr.findIndex((user) => user.id === Number(id));
-  if (index === -1) {
-    return;
-  }
-  arr.splice(index, 1);
+  todos = todos.filter((todo) => todo.id !== parseInt(id));
+  res.status(204).end();
 });
 
-// update todo
-app.put("/api/contacts/Users/:id", (req, res) => {
-  const { title } = req.body;
-  const { id } = req.params;
-  const index = arr.findIndex((user) => user.id === Number(id));
-  if (index === -1) {
-    return;
-  }
-  arr[index].title = title;
-});
-
-app.listen(port, () => {
-  console.log(`hellow ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

@@ -26,7 +26,7 @@ app.post("/todos", (req, res) => {
 app.put("/todos/:id", (req, res) => {
   const id = req.params.id;
   const text = req.body.text;
-  const todoIndex = todos.findIndex(todo => todo.id === parseInt(id));
+  const todoIndex = todos.findIndex((todo) => todo.id === parseInt(id));
 
   if (todoIndex !== -1) {
     todos[todoIndex].text = text;
